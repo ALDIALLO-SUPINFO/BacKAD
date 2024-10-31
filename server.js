@@ -216,6 +216,17 @@ app.put('/api/user/credits', authenticateToken, async (req, res) => {
     }
 });
 
+// Ajout d'un healthcheck pour Render
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+});
+
+
 // Routes Google Auth
 app.get('/api/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -235,4 +246,10 @@ app.get('/api/auth/google/callback',
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+const server = app.listen(PORT, () => {
+    console.log(`
+    🚀 Serveur démarré sur le port ${PORT}
+    🌍 Environment: ${process.env.NODE_ENV}
+    📍 URL: https://advancev2.onrender.com
+    `);
+});
