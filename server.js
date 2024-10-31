@@ -245,6 +245,37 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
+// Route pour vérifier si un utilisateur existe
+app.post('/api/checkUser', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Vérifier si l'email est fourni
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email requis'
+            });
+        }
+
+        // Rechercher l'utilisateur dans la base de données
+        const existingUser = await User.findOne({ email });
+        
+        // Renvoyer le résultat
+        res.json({
+            success: true,
+            exists: !!existingUser,
+            provider: existingUser?.googleId ? 'google' : existingUser ? 'local' : null
+        });
+    } catch (error) {
+        console.error('Erreur lors de la vérification de l\'utilisateur:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur lors de la vérification de l\'utilisateur'
+        });
+    }
+});
+
 // Route pour la modification du profil
 app.put('/api/user/profile', authenticateToken, async (req, res) => {
     try {
