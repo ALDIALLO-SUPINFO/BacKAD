@@ -24,7 +24,15 @@ app.use(cors({
   
 app.use(passport.initialize());
 app.use(passport.session());
-
+// Route de test/santé
+app.get('/', (req, res) => {
+    res.json({
+        message: 'API AdVance v2 en ligne',
+        status: 'ok',
+        environment: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
+});
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('MongoDB connecté'))
