@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 // Middlewares
-app.use(cors());
+
 app.use(express.json());
 app.use(session({
     secret: process.env.SESSION_SECRET,
