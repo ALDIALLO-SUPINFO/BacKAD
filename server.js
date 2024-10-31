@@ -20,30 +20,46 @@ app.use(session({
 app.use(cors({
     origin: [
         'http://localhost:3000',
-        'https://advancev2-ezmp.vercel.app'
+        'https://advancev2-ezmp.vercel.app',
+        'https://advancev2-ctb0qrr2q-alious-projects-3ce2c1db.vercel.app', // Ajout du nouveau domaine
+        /\.vercel\.app$/ // Pour autoriser tous les sous-domaines Vercel (optionnel)
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Access-Control-Allow-Origin'],
+    maxAge: 86400 // Cache les résultats du preflight pendant 24 heures
 }));
+
+// Configuration additionnelle pour gérer les preflight requests
+app.options('*', cors()); // Enable pre-flight requests pour toutes les routes
+
+// Middleware pour les headers CORS (backup)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 // Route de test/santé
 // Middleware d'erreur amélioré
-app.use((err, req, res, next) => {
-    console.error('❌ Erreur:', {
-        method: req.method,
-        url: req.url,
-        error: err.message,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
-    });
+// app.use((err, req, res, next) => {
+//     console.error('❌ Erreur:', {
+//         method: req.method,
+//         url: req.url,
+//         error: err.message,
+//         stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+//     });
     
-    res.status(500).json({
-        success: false,
-        message: 'Erreur serveur',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-});
+//     res.status(500).json({
+//         success: false,
+//         message: 'Erreur serveur',
+//         error: process.env.NODE_ENV === 'development' ? err.message : undefined
+//     });
+// });
 app.get('/', (req, res) => {
     res.json({
         message: 'API AdVance v2 en ligne',
