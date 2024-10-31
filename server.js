@@ -99,6 +99,15 @@ passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => done(err, user));
 });
 
+// Route de test/santé
+app.get('/', (req, res) => {
+    res.json({
+        message: 'API AdVance v2 en ligne',
+        status: 'ok',
+        environment: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
+});
 // Route pour récupérer le profil utilisateur
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
     try {
@@ -156,6 +165,15 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Ajout d'un healthcheck pour Render
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+});
 // Route d'inscription mise à jour
 app.post('/api/signup', async (req, res) => {
     const { email, password, firstName } = req.body;
