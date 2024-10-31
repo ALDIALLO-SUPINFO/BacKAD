@@ -25,6 +25,21 @@ app.use(cors({
 app.use(passport.initialize());
 app.use(passport.session());
 // Route de test/santé
+// Middleware d'erreur amélioré
+app.use((err, req, res, next) => {
+    console.error('❌ Erreur:', {
+        method: req.method,
+        url: req.url,
+        error: err.message,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+    
+    res.status(500).json({
+        success: false,
+        message: 'Erreur serveur',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
 app.get('/', (req, res) => {
     res.json({
         message: 'API AdVance v2 en ligne',
