@@ -21,8 +21,12 @@ app.use(cors({
     origin: [
         'http://localhost:3000',
         'https://advancev2-ezmp.vercel.app',
+       'https://heartfelt-lolly-d74f75.netlify.app/',
         'https://advancev2-ctb0qrr2q-alious-projects-3ce2c1db.vercel.app', // Ajout du nouveau domaine
-        /\.vercel\.app$/ // Pour autoriser tous les sous-domaines Vercel (optionnel)
+        /\.vercel\.app$/ ,
+        /\.netlify\.app$/ ,
+        
+        // Pour autoriser tous les sous-domaines Vercel (optionnel)
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
